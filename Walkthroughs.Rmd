@@ -14,15 +14,102 @@ library(readxl)
 library(janitor)
 ```
 
-
+# Walkthrough 1
 ```{r}
 #Load data
-ExcelGradeBook <- 
+gradebook <- 
   read_excel(
     here("data", "gradebooks", "ExcelGradeBook.xlsx"),
     sheet = 1, 
     skip = 10
   )
+
+#Clean data using <janitor>
+gradebook <- 
+  gradebook %>%
+  clean_names() %>%
+  remove_empty() %>%
+  select(-absent, -late)
+
+#Create new dataframe for analysis
+classwork_df <- 
+  gradebook %>%
+  select(2:9, contains("classwork_")) %>%
+  mutate_at(vars(contains("classwork_")), list(~ as.numeric(.))) %>%
+  pivot_longer(
+    cols = contains("classwork_"),
+    names_to = "classwork_number",
+    values_to = "score"
+  )
+```
+```{r}
+#Analysis
+summary(gradebook)
+
+# Bar graph for categorical variable
+gradebook %>%
+  ggplot(aes(x = letter_grade,
+             fill = running_average > 90)) +
+  geom_bar() +
+  labs(title = "Bar Graph of Student Grades",
+       x = "Letter Grades",
+       y = "Count",
+       fill = "A or Better")
+
+classwork_df %>%
+  ggplot(aes(x = classwork_number,
+    y = score,
+    fill = classwork_number)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Classwork Scores",
+       x = "Classwork",
+       y = "Score") +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
 
+```{r}
+#See if formative assessments are predicive of overall grade
+#Check linearity
+gradebook %>%
+  ggplot(aes(x = formative_assessments,
+             y = running_average)) +
+  geom_point(color = "dark green") +
+  geom_smooth(method = "lm") +
+  labs(title = "Relationship between Formative Assessments and Grade Average",
+       x= "Formative Assessment Score",
+       y = "Overall Grade in Percentage")
+
+#Check for outliers on independent variable
+gradebook %>%
+  ggplot(aes(x = "", #Use quotes to make sure that box plot is oriented with data on y-axis - indicates no data
+             y = formative_assessments)) +
+  geom_boxplot(fill = "dark green") +
+  labs(x = "Formative Assessment",
+       y = "Score")
+
+#Check for outliers in dependent variable
+gradebook %>%
+  ggplot(aes(x = "", #Use quotes to make sure that box plot is oriented with data on y-axis - indicates no data
+             y = running_average)) +
+  geom_boxplot(fill = "dark orange") +
+  labs(x = "Overall Score in Percentage",
+       y = "Score")
+
+#Run simple linear regreesion
+reg1 <- lm(running_average ~ formative_assessments, data = gradebook )
+summary(reg1)
+
+#This is a SIMPLE linear regression with one variable --> we could probably explain more using other variables like HW
+#Also -- this analysis is relational at BEST. There is no causal statements we can make and there are a lot of endogeneity issues. Particularly b/c the running average is constructed using scores on formatives, so there has to be a relationship....
+
+#Would be more interesting to track types of interventions and supports and the grades of students?
+```
+
+#Walkthrough 2
+```{r}
+
+```
 
