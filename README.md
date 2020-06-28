@@ -1,2 +1,2 @@
 # edudatascience
-Practice from: https://datascienceineducation.com/
+Practice and walkthroughs from: https://datascienceineducation.com/

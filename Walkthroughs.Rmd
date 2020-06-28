@@ -1,0 +1,28 @@
+---
+title: "Walkthroughs"
+author: "Ben Blanco"
+date: "6/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(readxl)
+library(janitor)
+```
+
+
+```{r}
+#Load data
+ExcelGradeBook <- 
+  read_excel(
+    here("data", "gradebooks", "ExcelGradeBook.xlsx"),
+    sheet = 1, 
+    skip = 10
+  )
+```
+
+
