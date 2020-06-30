@@ -110,6 +110,38 @@ summary(reg1)
 
 #Walkthrough 2
 ```{r}
+#Load data (scrapped from pdf)
+race_pdf <- readRDS(here("data", "agg_data", "race_pdf.Rds"))
+
+#Convert data to dataframe
+race_df <-
+  race_pdf %>%
+  # Turn each page into a tibble
+  map(~ as_tibble(.x, .name_repair = "unique")) %>% 
+  # Make data frame and remove unnecessary rows
+  map_df(~ slice(.,-1:-2)) %>%
+  # Use descriptive column names
+  set_names(
+    c(
+      "school_group",
+      "school_name",
+      "grade",
+      "na_num", # Native American number of students
+      "na_pct", # Native American percentage of students
+      "aa_num", # African American number of students
+      "aa_pct", # African American percentage
+      "as_num", # Asian number of students
+      "as_pct", # Asian percentage
+      "hi_num", # Hispanic number of students
+      "hi_pct", # Hispanic percentage
+      "wh_num", # White number of students
+      "wh_pct", # White percentage
+      "pi_pct", # Pacific Islander percentage
+      "blank_col",
+      "tot" # Total number of students (from the Race PDF)
+    )
+  )
+
 
 ```
 
