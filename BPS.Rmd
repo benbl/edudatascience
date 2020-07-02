@@ -18,21 +18,25 @@ library(sf)
 ```{r}
 #Load Data
 bos <- st_read("https://opendata.arcgis.com/datasets/3525b0ee6e6b427f9aab5d0a1d0a1a28_0.geojson")
-schools <- st_read("https://opendata.arcgis.com/datasets/1d9509a8b2fd485d9ad471ba2fdb1f90_0.geojson")
+pub_schools <- st_read("https://opendata.arcgis.com/datasets/1d9509a8b2fd485d9ad471ba2fdb1f90_0.geojson")
+non_pub_schools <- st_read("https://opendata.arcgis.com/datasets/0046426a3e4340a6b025ad52b41be70a_1.geojson")
+resilience_index <- st_read("https://opendata.arcgis.com/datasets/34f2c48b670d4b43a617b1540f20efe3_0.geojson")
 
-#Plot it
+#Map of Public and Nonpublic schools
 ggplot(data = bos) +
   geom_sf() +
-  geom_sf(data = schools, color = "dark green") +
+  geom_sf(data = pub_schools, aes(color = "Public School"), show.legend = "point") +
+  geom_sf(data = non_pub_schools, aes(color = "Non Public School"), show.legend = "point") +
+  
   theme_void() +
-  ggtitle("Boston School District")
-  
-  
-  
-#Compare population change to number of school seats?
+  ggtitle("Map of Boston School District")
 
 
-  
-  
+#Overlap schools with TotChild - number of kids under 5 years old
+ggplot() +
+  geom_sf(data = resilience_index, aes(fill = TotChild))+
+  geom_sf(data = pub_schools, aes(color = "Public School"), show.legend = "point") +
+  geom_sf(data = non_pub_schools, aes(color = "Non Public School"), show.legend = "point")
+
 ```
 
