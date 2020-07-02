@@ -1,0 +1,38 @@
+---
+title: "BPS School District - Aggregate Data"
+author: "Ben Blanco"
+date: "7/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(readxl)
+library(janitor)
+library(sf)
+```
+
+```{r}
+#Load Data
+bos <- st_read("https://opendata.arcgis.com/datasets/3525b0ee6e6b427f9aab5d0a1d0a1a28_0.geojson")
+schools <- st_read("https://opendata.arcgis.com/datasets/1d9509a8b2fd485d9ad471ba2fdb1f90_0.geojson")
+
+#Plot it
+ggplot(data = bos) +
+  geom_sf() +
+  geom_sf(data = schools, color = "dark green") +
+  theme_void() +
+  ggtitle("Boston School District")
+  
+  
+  
+#Compare population change to number of school seats?
+
+
+  
+  
+```
+
